@@ -4,6 +4,13 @@ engine: knitr
 
 # Linear models {#sec-its-just-a-linear-model}
 
+
+<! -- PL: OK so these comments are based purely on first impression of this chapter alone, so take with a pinch of salt. I will go back and read the introduction once I have more time! --> 
+
+<! -- one suggestion. would be good to get a read of this chapter from some students or someone who wants to learn this but doesn't know, for the sake of testing comprehenibility. not able to imagine what it's like to not know anymore. Again, once i have more time i'll maybe try this with the post stratification chapter since aside from some toy analysis with your code like 3 years ago, i haven't thought about it since... -->
+
+
+
 **Required material**
 
 - Read *Regression and Other Stories*, Chapters 6 "Background on regression modeling", 7 "Linear regression with a single predictor", 10 "Linear regression with multiple predictors", 13 "Logistic regression", and 15 "Other generalized linear models", [@gelmanhillvehtari2020]
@@ -16,9 +23,12 @@ engine: knitr
 
 **Key concepts and skills**
 
-- Linear models are a key component of statistical inference and enable us to consider a wide range of circumstance. Simple and multiple linear regression refer to the situation in which we consider some continuous dependent variable as a function of one, and multiple, independent variables, respectively. Logistic and Poisson regression are used when the dependent variable is a binary variable, and a count variable, respectively.
+- Linear models are a key component of statistical inference and enable us to consider a wide range of circumstance. Simple and multiple linear regression refer to the situation in which we consider some continuous dependent variable as a function of one, and multiple, independent variables, respectively. 
+- Logistic regression is used when the dependent variable is a binary variable, and a Poisson regression is used for a count variable. <! -- repetition of respectively jarring. moving glm to its own bullet. -->
 - We are concerned with two different aspects: prediction and inference. We use machine learning approaches for the former, and Bayesian methods for the latter. 
-- Finally, putting a model into production requires a different set of skills to building it. This includes a familiarity with a cloud provider and the ability to create an API. 
+- Finally, putting a model into production requires a different set of skills to building it. This includes a familiarity with a cloud provider and the ability to create an API. <! -- i'd just be a little more specific if possible about what production means in this instance, otherwise you might get the impression that typing in lm(y~z) requires 'skill'.  -->
+
+
 
 **Key packages and functions**
 
@@ -241,7 +251,11 @@ $$
 Y = \beta_0 + \beta_1 X + \epsilon.
 $$ {#eq-xandy}
 
+<! -- appreciate that if you're reading this as an 'end user', you probably already have a fairly good understanding of linear regression. But, given that most people's first understanding of the linear model is the linear equation, it might make sense to start with that, then move on to the stochastic elements and distributional assumptions, so normal distribution, logit transformation etc.   -->
+
 Here, there are two coefficients, also referred to as parameters: the intercept, $\beta_0$, and the slope, $\beta_1$. In @eq-xandy we are saying that the expected value of $Y$ is $\beta_0$ when $X$ is 0, and that the expected value of $Y$ will change by $\beta_1$ units for every one unit change in $X$. We may then take this relationship to the data that we have to estimate these coefficients. The $\epsilon$ is noise and accounts for deviations away from this relationship. It is this noise that we generally assume to be normally distributed.
+
+<! -- maybe a lil subhed here -->
 
 To make this example concrete, we will simulate some data and then discuss it in that context. We could consider the time it takes someone to run five kilometers, compared with the time it takes them to run a marathon (@fig-fivekmvsmarathon-1). In the simulation we specify a relationship of 8.4, as that is roughly the ratio between the distance of a marathon and a five-kilometer run. Notice that it is the noise that is normally distributed, not the variables.
 
@@ -477,6 +491,8 @@ ggplot(
     x = "Actual marathon time"
   )
 ```
+
+<! -- really nice section here! -->
 
 <!-- We want our estimate to be unbiased. When we say our estimate is unbiased, we are trying to say that even though for some sample our estimate might be too high, and for another sample our estimate might be too low, eventually if we have a lot of data then our estimate would be the same as the population. That is, an estimator is unbiased if it does not systematically over- or under-estimate [@islr, p. 65]. -->
 
@@ -724,15 +740,17 @@ modelsummary::modelsummary(
 )
 ```
 
-
+<! -- below mini para is a little loose be specific on: "and usually graphs and associated text are sufficient" -->
 
 There are a variety of threats to the validity of linear regression estimates, and aspects to think about, particularly when using an unfamiliar dataset. We need to address these when we use it, and usually graphs and associated text are sufficient to assuage most of them. Aspects of concern include:
 
-1. Linearity of explanatory variables. We are concerned with whether the independent variables enter in a linear way. We can usually be convinced there is enough linearity in our explanatory variables for our purposes by using graphs of the variables.
+1. Linearity of explanatory variables. We are concerned with whether the independent variables enter in a linear way. We can usually be convinced there is enough linearity in our explanatory variables for our purposes by using graphs of the variables. <! -- i thought this was linearity of conditional relationship, which could also be violated if dep var is not linear? -->
 2. Independence of errors. We are concerned that the errors are not correlated with each other. For instance, if we are interested in weather-related measurement such as average daily temperature, then we may find a pattern because the temperature on one day is likely similar to the temperature on another. We can be convinced that we have satisfied this condition by making graphs of estimated compared with actual outcomes, such as @fig-fivekmvsmarathonresids-4, or graphs of the residuals compared with observed values, such as @fig-fivekmvsmarathonresids-3.
 3. Homoscedasticity of errors. We are concerned that the errors are not becoming systematically larger or smaller throughout the sample. If that is happening, then we term it heteroscedasticity. Again, graphs of errors, such as @fig-fivekmvsmarathonresids-2, are used to convince us of this.
 <!-- 4. Normality of errors. We are concerned that our errors are normally distributed when we are interested in making individual-level predictions. -->
 4. Outliers and other high-impact observations. Finally, we might be worried that our results are being driven by a handful of observations. For instance, thinking back to @sec-static-communication and Anscombe's Quartet, we notice that linear regression estimates would be heavily influenced by the inclusion of one or two particular points. We can become comfortable with this by considering our analysis on various sub-sets.
+
+<! -- i usually teach LINE linearity, independence, normality of resids, and equal variance (homosked) + outliers at end and looks like you've deleted one of assumptions here. is there good reason for it, like the relationship of residuals to linearity? -->
 
 Those aspects are statistical concerns and relate to whether the model is working. The most important threat to validity and hence the aspect that must be addressed at some length, is whether or not this model is directly relevant to the research question of interest.
 
@@ -740,7 +758,10 @@ Those aspects are statistical concerns and relate to whether the model is workin
 
 @breiman2001statistical describes two cultures of statistical modelling: one focused on prediction and the other on inference. In general, around this time, various disciplines tended to focus on either inference or prediction. The rise of data science has meant there is now a need to be comfortable with both [@Neufeld2021]. The two cultures are being brought closer together, and there is an overlap and interaction between prediction and inference. But their separate evolution means there are still considerable cultural differences.
 
-In this book we use frequentist GLMs within `tidymodels` when we are interested in prediction. And when we are focused on inference, instead, we use the probabilistic programming language Stan to fit GLMs in a Bayesian framework, and interface with it using `rstanarm` [@citerstanarm]. This is slightly simplistic---we could do prediction with Bayesian models, and we could use Stan within `tidymodels`. But, for the sake of simplicity and clarity, we keep these separated in this way for this book. It is important to be conversant in both ecosystems and cultures.
+In this book we use frequentist GLMs within `tidymodels` when we are interested in prediction. And when we are focused on inference, instead, we use the probabilistic programming language Stan to fit GLMs in a Bayesian framework, and interface with it using `rstanarm` [@citerstanarm]. This is slightly simplistic---we could do prediction with Bayesian models, and we could use Stan <! -- did you mean causal inference here? --> 
+within `tidymodels`. But, for the sake of simplicity and clarity, we keep these separated in this way for this book. It is important to be conversant in both ecosystems and cultures.
+
+<! -- i am not entirely sure why the distinction between frequentist/bayes for prediction/inference respectively. if anything i would expect the other way around, but i know that's mostly a conventional thing. at the moment this passage still reads a little like you want students to do things this way. maybe just say it's entirely arbitrary, do what makes you feel warm inside kids! --> 
 
 ### Prediction
 
@@ -819,7 +840,8 @@ The estimated coefficients are summarized in the first column of @tbl-modelsumma
 
 Running a regression in a Bayesian setting is similar to frequentist (i.e. `lm()`, `glm()`, etc). The main difference from a regression point of view, is that the parameters involved in the models (i.e. $\beta_0$, $\beta_1$, etc) are considered random variables, and so themselves have associated probability distributions. 
 
-Before we run a regression in a Bayesian framework, we need to decide on a starting probability distribution for each of these parameters, which we call a "prior". This is another reason for the workflow advocated in this book: the simulation stage leads directly to priors. We will again specify the model that we are interested in, but this time we include priors.
+Before we run a regression in a Bayesian framework, we need to decide on a starting probability distribution for each of these parameters, which we call a "prior". This is another reason for the workflow advocated in this book: the simulation stage leads directly to priors. We will again specify the model that we are interested in, but this time we include priors. <! -- this bit feels inevitably a little like drinking from the firehose! i am not sure if any of the required readings cover priors in depth. do they? if you need cut to provide space, there's a long ish passage about why p-values aren't the best, would be better spent explaining what priors are and why they are good imo--> 
+
 
 $$
 \begin{aligned}
@@ -1171,6 +1193,7 @@ week_or_weekday <-
 
 week_or_weekday
 ```
+<!-- really good logit section without getting too into the MLE stuff -->
 
 We can use `glm()` from base R to do a quick estimation. In this case we will try to work out whether it is a weekday or weekend, based on the number of cars we can see. We are interested in estimating @eq-logisticexample:
 $$
@@ -1267,7 +1290,7 @@ week_or_weekday_tidymodels <-
   )
 ```
 
-As before, we can make a graph of the actual results compared with our estimates. But one nice aspect of this is that we could use our test dataset to evaluate our model's forecasting ability more thoroughly, for instance through a confusion matrix, which specifies the count of each prediction by what the truth was. We find that the model does well on the held-out dataset. There were 90 observations where the model predicted it was a weekday, and it was actually a weekday, and 95 where the model predicted it was a weekend, and it was a weekend. It was wrong for 15 observations, and these were split across seven where it forecast a weekday, but it was a weekend, and eight where it was the opposite case.
+As before, we can make a graph of the actual results compared with our estimates. But one nice aspect of this is that we could use our test dataset to evaluate our model's forecasting ability more thoroughly, for instance through a confusion matrix, which sets the prediction of the model against the truth from the original data. It is arranged in four cells: true positives (positives correctly predicted); true negatives (negatives correctly predicted); false positives (model predicts positive incorrectly); and false negatives (model predicts negatives incorrectly). We find that the model does well on the held-out dataset. There were 90 observations where the model predicted it was a weekday, and it was actually a weekday, and 95 where the model predicted it was a weekend, and it was a weekend. It was wrong for 15 observations, and these were split across seven where it forecast a weekday, but it was a weekend, and eight where it was the opposite case. <!-- confusion matrices are confusing!-->
 
 ```{r}
 week_or_weekday_tidymodels |>
@@ -1651,7 +1674,7 @@ ces2020_with_predictions |>
     format.args = list(big.mark = ",")
   )
 ```
-
+<!-- this was a really nice practical work through :) -->
 
 ## Poisson regression
 
@@ -1713,7 +1736,7 @@ poisson_takes_shape |>
     )
   ) |>
   ggplot(aes(x = draw)) +
-  geom_density() +
+  geom_density() + #suggest maybe a bar here instead to keep the PMF 
   facet_wrap(
     vars(lambda),
     scales = "free_y"
@@ -2433,7 +2456,7 @@ modelsummary::modelsummary(
 )
 ```
 
-We could use posterior predictive checks to more clearly show that the negative binomial approach is a better choice for this circumstance (@fig-ppcheckpoissonvsbinomial).
+We could use posterior predictive checks to more clearly show that the negative binomial approach is a better choice for this circumstance (@fig-ppcheckpoissonvsbinomial). <--! jackmans pscl package has an easy implementation of the over-dispersion test, perhaps worth mentioning briefly! -->
 
 ```{r}
 #| echo: true
@@ -2695,6 +2718,8 @@ Again, after we save the "plumber.R" file we should have an option to "Run API".
 
 
 #### Cloud model
+
+<!-- okay just one quick suggestion on the cloud stuff. I wonder if good way to motivate against the *why bother* question would be a brief discussion of the relationship between the number of observations/parameters and computing time. illustrate quadratic growth in complexity vs linear. Should help people understand which kind of problems you'd need a server for... -->
 
 To this point, we have got an API working on our own machine, but what we really want to do is to get it working on a computer such that the API can be accessed by anyone. To do this we are going to use [DigitalOcean](https://www.digitalocean.com). It is a charged service, but when you create an account, it will come with $200 in credit, which will be enough to get started.
 
